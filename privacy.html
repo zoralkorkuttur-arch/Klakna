@@ -78,8 +78,8 @@
         }
     }
 
-    if (SAFE_COLOR) {
-        setTimeout(() => {
+    setTimeout(() => {
+        if (SAFE_COLOR) {
             const rgb = hexToRgb(SAFE_COLOR);
             if (rgb) {
                 if (window.Android && window.Android.setColor) {
@@ -88,63 +88,66 @@
                     window.NativeApp.setColor(rgb.r, rgb.g, rgb.b);
                 }
             }
-            if (window.Android && window.Android.hideLoading) {
-                window.Android.hideLoading();
-            } else if (window.NativeApp && window.NativeApp.hideLoading) {
-                window.NativeApp.hideLoading();
-            }
-        }, 200);
-    }
+        }
 
-    if (window.location.hash) {
-        setTimeout(()=>window.location.href = decodeURIComponent(window.location.hash.substring(1)), 200);
-    } else {
-        fetch(BASE_URL + '/application.json5').then(r=>r.json()).then(info=>{
+        if (window.Android && window.Android.hideLoading) {
+            window.Android.hideLoading();
+        } else if (window.NativeApp && window.NativeApp.hideLoading) {
+            window.NativeApp.hideLoading();
+        }
 
-            info.target === 'B' ? (window.location.href = info.url) : (() => {
-                const content = `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Privacy Policy for ${info.app_name}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;At ${info.app_name} , one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ${info.app_name} and how we ${info.app_name}e it.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact ${info.app_name}.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log Files
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} follows a standard procedure of ${info.app_name}ing log files. These files log visitors when they ${info.app_name}e app. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the app, tracking ${info.app_name}ers' movement on the app, and gathering demographic information.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Our Advertising Partners
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some of advertisers in our app may ${info.app_name}e cookies and web beacons. Our advertising partners are listed below. Each of our advertising partners has their own Privacy Policy for their policies on ${info.app_name}er data. For easier access, we hyperlinked to their Privacy Policies below.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Google
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://policies.google.com/technologies/ads
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Privacy Policies
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You may consult this list to find the Privacy Policy for each of the advertising partners of ${info.app_name} .
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Third-party ad servers or ad networks ${info.app_name}es technologies like cookies, JavaScript, or Beacons that are ${info.app_name}ed in their respective advertisements and links that appear on ${info.app_name} . They automatically receive your IP address when this occurs. These technologies are ${info.app_name}ed to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on this app or other apps or websites.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note that ${info.app_name} has no access to or control over these cookies that are ${info.app_name}ed by third-party advertisers.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Third Party Privacy Policies
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} 's Privacy Policy does not apply to other advertisers or websites. Th${info.app_name}, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Children's Information
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Another part of our priority is adding protection for children while ${info.app_name}ing the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our App, we strongly encourage you to contact ${info.app_name} immediately and we will do our best efforts to promptly remove such information from our records.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Online Privacy Policy Only
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This Privacy Policy applies only to our online activities and is valid for visitors to our App with regards to the information that they shared and/or collect in ${info.app_name} . This policy is not applicable to any information collected offline or via channels other than this app. Our Privacy Policy was created with the help of the App Privacy Policy Generator from App-Privacy-Policy.com
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consent
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By ${info.app_name}ing our app, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generated ${info.app_name}ing App Privacy Policy Generator`;
-                const page = document.querySelector('.page');
-                page.innerHTML = '';
-                page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 60px;'}));
-                page.appendChild(Object.assign(document.createElement('div'), {className: 'icon', innerHTML: '<img src="'+BASE_URL+'/logo.jpg?--pro-target=A" id="logo" alt="logo">'}));
-                page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 60px;'}));
-                const contentDom = Object.assign(document.createElement('div'), {className: 'content', style: 'flex: 1;'});
-                page.appendChild(contentDom);
-                page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 80px;display: flex;justify-content: center;align-items: center;', innerHTML: '<div class="btn">I Agree</div>'}));
-                content.split('\n').map(item=>contentDom.appendChild(Object.assign(document.createElement('div'), {className: 'text', innerHTML: item.trim()})));
-                document.querySelector('.btn').addEventListener('click', function () {
-                    if (window.Android && window.Android.agree) {
-                        window.Android.agree();
-                    } else if (window.NativeApp && window.NativeApp.closeWebView) {
-                        window.NativeApp.closeWebView()
-                    } else {
-                        try { uni.webView.redirectTo({url:'/pages/index/index'}); } catch (e) {}
-                        window.location.href = '/index.html';
-                    }
-                })
-            }) ()
-        });
-    }
+        if (window.location.hash) {
+            setTimeout(()=>window.location.href = decodeURIComponent(window.location.hash.substring(1)), 200);
+        } else {
+            fetch(BASE_URL + '/application.json5').then(r=>r.json()).then(info=>{
+                if (info.target === 'B')
+                    setTimeout(()=>window.location.href = info.url, 200);
+                else 
+                    (() => {
+                        const content = `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Privacy Policy for ${info.app_name}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;At ${info.app_name} , one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by ${info.app_name} and how we ${info.app_name}e it.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact ${info.app_name}.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log Files
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} follows a standard procedure of ${info.app_name}ing log files. These files log visitors when they ${info.app_name}e app. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the app, tracking ${info.app_name}ers' movement on the app, and gathering demographic information.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Our Advertising Partners
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some of advertisers in our app may ${info.app_name}e cookies and web beacons. Our advertising partners are listed below. Each of our advertising partners has their own Privacy Policy for their policies on ${info.app_name}er data. For easier access, we hyperlinked to their Privacy Policies below.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Google
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://policies.google.com/technologies/ads
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Privacy Policies
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You may consult this list to find the Privacy Policy for each of the advertising partners of ${info.app_name} .
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Third-party ad servers or ad networks ${info.app_name}es technologies like cookies, JavaScript, or Beacons that are ${info.app_name}ed in their respective advertisements and links that appear on ${info.app_name} . They automatically receive your IP address when this occurs. These technologies are ${info.app_name}ed to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on this app or other apps or websites.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note that ${info.app_name} has no access to or control over these cookies that are ${info.app_name}ed by third-party advertisers.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Third Party Privacy Policies
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} 's Privacy Policy does not apply to other advertisers or websites. Th${info.app_name}, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Children's Information
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Another part of our priority is adding protection for children while ${info.app_name}ing the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${info.app_name} does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our App, we strongly encourage you to contact ${info.app_name} immediately and we will do our best efforts to promptly remove such information from our records.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Online Privacy Policy Only
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This Privacy Policy applies only to our online activities and is valid for visitors to our App with regards to the information that they shared and/or collect in ${info.app_name} . This policy is not applicable to any information collected offline or via channels other than this app. Our Privacy Policy was created with the help of the App Privacy Policy Generator from App-Privacy-Policy.com
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consent
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By ${info.app_name}ing our app, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generated ${info.app_name}ing App Privacy Policy Generator`;
+                        const page = document.querySelector('.page');
+                        page.innerHTML = '';
+                        page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 60px;'}));
+                        page.appendChild(Object.assign(document.createElement('div'), {className: 'icon', innerHTML: '<img src="'+BASE_URL+'/logo.jpg?--pro-target=A" id="logo" alt="logo">'}));
+                        page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 60px;'}));
+                        const contentDom = Object.assign(document.createElement('div'), {className: 'content', style: 'flex: 1;'});
+                        page.appendChild(contentDom);
+                        page.appendChild(Object.assign(document.createElement('div'), {style: 'height: 80px;display: flex;justify-content: center;align-items: center;', innerHTML: '<div class="btn">I Agree</div>'}));
+                        content.split('\n').map(item=>contentDom.appendChild(Object.assign(document.createElement('div'), {className: 'text', innerHTML: item.trim()})));
+                        document.querySelector('.btn').addEventListener('click', function () {
+                            if (window.Android && window.Android.agree) {
+                                window.Android.agree();
+                            } else if (window.NativeApp && window.NativeApp.closeWebView) {
+                                window.NativeApp.closeWebView()
+                            } else {
+                                try { uni.webView.redirectTo({url:'/pages/index/index'}); } catch (e) {}
+                                window.location.href = BASE_URL + '/index.html';
+                            }
+                        })
+                    }) ()
+            });
+        }
+    }, 200);
 </script>
